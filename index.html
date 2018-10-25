@@ -1,0 +1,28 @@
+<!Doctype html>
+<html>
+	<head>
+		<title>Web Crawler | Monzo Take Home Test:Francis Sunday</title>
+		<style>
+			.container {
+				margin: 0 auto;
+				max-width: 900px;
+				text-align: center;
+					margin-top: 200px;
+			}
+			form > input {
+				padding: 14px 16px;
+				width: 100%;
+				font-size: 2em;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<form action="/crawl" method="POST">
+				<input type="text" placeholder="Enter website url to crawl: eg
+				https://monzo.com" name="host">
+				<input type="submit" value="Crawl" name="submit">
+			</form>
+		</div>
+	</body>
+</html>
