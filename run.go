@@ -6,15 +6,18 @@ import (
 	"path"
 	"time"
 
-	"github.com/codehakase/monzo_web_crawler_exercise/crawler"
+	crawl "./crawler"
 )
 
 func main() {
 	s := time.Now()
 	host := os.Args[1]
+	if host == "" {
+		log.Fatalf("URL argurment is required")
+	}
 	log.Println("host: ", host)
-	c := crawler.NewCrawler(host)
-	worker := crawler.NewCrawlerWorker(c)
+	c := crawl.NewCrawler(host)
+	worker := crawl.NewCrawlerWorker(c)
 	worker.AddJob("/")
 	done := make(chan bool, 1)
 	worker.Start(done)
@@ -28,7 +31,7 @@ func main() {
 		return
 	}
 	fileLoc := path.Join(loc, "sitemap.xml")
-	err = crawler.WriteXML(fileLoc, host, worker.GetLinks())
+	err = crawl.WriteXML(fileLoc, host, worker.GetLinks())
 	if err != nil {
 		log.Fatal(err)
 		return

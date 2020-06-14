@@ -1,12 +1,13 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"os"
 	"path"
 
-	"github.com/codehakase/monzo_web_crawler_exercise/crawler"
+	crawl "./crawler"
 	"github.com/gorilla/mux"
 )
 
@@ -25,8 +26,8 @@ func crawlHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	host := r.FormValue("host")
-	c := crawler.NewCrawler(host)
-	worker := crawler.NewCrawlerWorker(c)
+	c := crawl.NewCrawler(host)
+	worker := crawl.NewCrawlerWorker(c)
 	worker.AddJob("/")
 	done := make(chan bool, 1)
 	worker.Start(done)
@@ -40,11 +41,11 @@ func crawlHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	fileLoc := path.Join(loc, "sitemap.xml")
-	err = crawler.WriteXML(fileLoc, host, worker.GetLinks())
+	err = crawl.WriteXML(fileLoc, host, worker.GetLinks())
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Sitemap generated, view => <a href='./sitemap.xml'>sitemap.xml</a>"))
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	fmt.Fprint(w, `<h2>Sitemap generated, <a href='./sitemap.xml'>View</a></h2>`)
 }
